@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="好好吃饭">
+  <meta name="description" content="从喜欢的食物里，挑出今天的一餐。轻量餐食搭配库，随机推荐、收藏和自己的搭配。">
+  <title>好好吃饭 · 今天吃什么</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <a class="brand" href="#today" aria-label="好好吃饭首页"><img class="brand-mark" src="./icon.svg" alt=""><span>好好吃饭</span></a>
+      <button class="icon-button" id="preferences-button" aria-label="饮食偏好"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="currentColor"/><circle cx="15" cy="17" r="3" fill="currentColor"/></svg></button>
+    </header>
+    <main id="main"></main>
+    <footer class="page-footer">每一餐，都可以是喜欢的样子。<span>食物搭配参考 · 不替你规定每天吃多少</span></footer>
+  </div>
+  <nav class="bottom-nav" aria-label="主导航">
+    <a href="#today" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><span>今天吃什么</span></a>
+    <a href="#library" data-tab="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>搭配库</span></a>
+    <a href="#mine" data-tab="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 9c0 5-8 11-8 11S4 14 4 9a4 4 0 0 1 8-2 4 4 0 0 1 8 2Z"/></svg><span>我的收藏</span></a>
+  </nav>
+  <dialog id="sheet" aria-labelledby="sheet-title"><div class="sheet-handle"></div><div class="sheet-heading"><h2 id="sheet-title"></h2><button class="icon-button" id="close-sheet" aria-label="关闭">✕</button></div><div id="sheet-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="import-file" accept="application/json,.json" hidden>
+</body>
+</html>

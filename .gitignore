@@ -1,0 +1,10 @@
+_site/
+__pycache__/
+*.pyc
+*.log
+*.zip
+screenshots/
+tests/validation.json
+.DS_Store
+.env
+.env.*
