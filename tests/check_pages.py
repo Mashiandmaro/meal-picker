@@ -41,6 +41,10 @@ def run():
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(url, wait_until='networkidle')
+                page.locator('[data-action="shuffle"]').click()
+                page.locator('.choice-card').first.click()
+                page.locator('[data-action="confirm-choice"]').click()
+                page.locator('#sheet').wait_for(state='hidden')
                 page.wait_for_selector('.meal-card')
                 page.wait_for_function('navigator.serviceWorker.controller !== null')
                 scope = page.evaluate('(async()=> (await navigator.serviceWorker.ready).scope)()')

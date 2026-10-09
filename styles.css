@@ -13,3 +13,114 @@ body{background:var(--paper)}.app-shell{max-width:500px;padding-left:max(22px,en
 
 /* Put the actual meal above decoration on a phone. */
 .site-header{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:18px}.intro{font-size:13px;line-height:1.7;margin-top:6px}.meal-switch{margin-top:18px}.filter-label{margin-top:14px;margin-bottom:9px}.scene-button{margin-top:4px;margin-bottom:0}.suggestion-meta{margin-top:9px;margin-bottom:10px}#main>.meal-card .art-stage{height:110px}#main>.meal-card .art-stage .plate-art{height:133px;width:163px;position:relative;top:-10px}#main>.meal-card .art-badge{top:16px;left:17px}#main>.meal-card .art-caption{font-size:8px}#main>.meal-card .card-body{padding:18px 20px 10px}#main>.meal-card .card-subtitle{display:none}#main>.meal-card .mini-tags{display:none}#main>.meal-card .part-list{margin-top:15px;gap:9px}#main>.meal-card .part-icon{height:29px;width:29px}#main>.meal-card .meal-tip{margin-top:13px;padding-top:11px}#main>.meal-card .card-actions{margin-top:14px}.meal-card h2{overflow-wrap:anywhere}.sheet-copy,.source-note{overflow-wrap:anywhere}
+
+/* Three choices, in a single calm, thumb-friendly sheet. */
+.picker-invitation {
+  padding: 26px 22px 22px;
+  border-radius: 26px;
+  background: linear-gradient(160deg, #fff 42%, #f0f6f2);
+  text-align: center;
+}
+.invitation-art { height: 108px; position: relative; width: 154px; margin: 0 auto 17px; }
+.paper-card { position: absolute; width: 73px; height: 93px; border-radius: 16px; left: 40px; top: 7px; border: 1px solid #e2e9e4; }
+.paper-back { transform: rotate(-18deg) translateX(-22px); background: #edf1ea; }
+.paper-middle { transform: rotate(17deg) translateX(21px); background: #e7edee; }
+.paper-front { background: #fff; display: flex; align-items: center; flex-direction: column; justify-content: center; gap: 8px; box-shadow: 0 8px 22px #2f534b0c; }
+.paper-front svg { width: 28px; height: 28px; color: #749784; margin-bottom: 2px; }
+.paper-front i { width: 36px; height: 4px; background: #e6ede8; border-radius: 4px; }
+.paper-front i:last-child { width: 24px; background: #f0f3f1; }
+.invitation-eyebrow { font-size: 11px; color: #729481; }
+.picker-invitation h2 { font-size: 20px; line-height: 1.5; margin-top: 8px; letter-spacing: -.5px; }
+.picker-invitation p { font-size: 12px; color: var(--muted); line-height: 1.8; margin: 8px 0 21px; }
+.picker-invitation .button svg:last-child { margin-left: auto; }
+.picker-invitation .button svg:first-child { margin-right: auto; }
+.meal-card { scroll-margin-top: 15px; }
+.editable-parts .part-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.editable-parts .part-row { gap: 8px; }
+.editable-parts .part-role { width: 37px; font-size: 9px; }
+.part-swap { min-width: 44px; min-height: 44px; padding: 0 5px; color: #52846b; font-size: 11px; display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-shrink: 0; }
+.part-swap svg { width: 13px; height: 13px; }
+.part-swap:active { opacity: .55; }
+dialog.choice-sheet {
+  padding: 11px 20px calc(12px + env(safe-area-inset-bottom));
+  background: #f6f7f9;
+  border-radius: 32px 32px 0 0;
+  max-height: calc(100vh - 20px);
+  max-height: calc(100dvh - max(20px, env(safe-area-inset-top)));
+  overflow: hidden;
+}
+dialog.choice-sheet[open] { display: flex; flex-direction: column; }
+.choice-sheet .sheet-handle { flex-shrink: 0; margin-bottom: 13px; width: 32px; }
+.choice-sheet .sheet-heading { flex-shrink: 0; margin-bottom: 1px; gap: 6px; }
+.choice-sheet .sheet-heading h2 { font-size: 24px; letter-spacing: -.8px; }
+.choice-sheet .sheet-heading .icon-button { background: #e9ebee; width: 44px; height: 44px; }
+.choice-sheet #sheet-content { display: flex; flex-direction: column; min-height: 0; }
+.choice-intro { flex-shrink: 0; padding: 2px 0 15px; }
+.choice-intro p { font-size: 12px; color: #777e81; line-height: 1.8; }
+.choice-intro > span { display: inline-block; font-size: 10px; line-height: 1.6; color: #8c9692; margin-top: 6px; }
+.choice-list { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px; margin: 0 -2px; scrollbar-width: thin; }
+.choice-card { position: relative; cursor: pointer; display: block; flex-shrink: 0; animation: choice-card-enter 400ms cubic-bezier(.16,1,.3,1) backwards; animation-delay: calc(var(--card-order) * 45ms + 55ms); }
+.choice-radio { position: absolute; opacity: 0; width: 1px; height: 1px; inset: 50% auto auto 50%; margin: 0; }
+.choice-content {
+  display: grid;
+  grid-template-columns: 80px minmax(0,1fr);
+  gap: 13px;
+  padding: 13px;
+  min-height: 136px;
+  border: 1.5px solid #fff;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 2px 8px #263c3003;
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .2s;
+}
+.choice-card:active .choice-content { transform: scale(.985); }
+.choice-card.selected .choice-content { border-color: #76a78e; background: #f1f7f3; box-shadow: 0 4px 14px #2b69420a; }
+.choice-radio:focus-visible + .choice-content { outline: 3px solid #547e67; outline-offset: 2px; }
+.choice-visual { display: flex; align-items: center; justify-content: center; background: #eef3ed; border-radius: 15px; position: relative; overflow: hidden; min-height: 108px; align-self: stretch; }
+.choice-visual.balanced { background: #edf0f5; }
+.choice-visual.free { background: #f8eee6; }
+.choice-visual .plate-art { width: 102px; height: 100px; flex-shrink: 0; transform: translateY(8px); filter: drop-shadow(0 4px 4px #314e2f0b); }
+.choice-number { position: absolute; left: 9px; top: 8px; font-size: 9px; color: #a0ada3; font-weight: 600; letter-spacing: 1px; }
+.choice-info { display: flex; flex-direction: column; min-width: 0; align-self: center; }
+.choice-topline { display: flex; align-items: center; justify-content: space-between; height: 20px; margin-bottom: 3px; }
+.choice-topline .type-label { font-size: 9px; letter-spacing: .1px; }
+.choice-check { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid #e4e7e5; border-radius: 50%; background: #fff; transition: background .18s, border-color .18s; flex-shrink: 0; }
+.choice-check svg { width: 12px; height: 12px; color: #fff; opacity: 0; transform: scale(.6); transition: opacity .18s, transform .22s; stroke-width: 2.6; }
+.choice-card.selected .choice-check { border-color: var(--green); background: var(--green); }
+.choice-card.selected .choice-check svg { opacity: 1; transform: scale(1); }
+.choice-title { display: block; font-size: 15px; font-weight: 600; color: #29352f; line-height: 1.5; overflow-wrap: anywhere; letter-spacing: -.35px; margin-bottom: 6px; }
+.choice-foods { display: flex; flex-direction: column; gap: 3px; }
+.choice-foods > span { display: flex; gap: 7px; font-size: 11px; color: #66736a; line-height: 1.6; }
+.choice-foods > span > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.choice-role { flex: 0 0 30px; font-size: 9px; color: #9aa29e; padding-top: 1px; }
+.choice-footer { flex-shrink: 0; padding-top: 13px; }
+.choice-footer > p { font-size: 11px; line-height: 1.6; min-height: 18px; margin: 0 0 11px; text-align: center; color: #8b958e; overflow-wrap: anywhere; }
+.choice-footer-actions { display: grid; grid-template-columns: 1fr 1.35fr; gap: 10px; }
+.choice-footer .button { min-height: 50px; font-size: 13px; border-radius: 15px; }
+.choice-footer .button.outline { background: #e9edeb; }
+.choice-footer .button.primary:disabled { opacity: 1; background: #dce5df; color: #98ac9e; }
+.choice-footer .button.primary { transition: background .2s, color .2s, transform .18s; }
+.choice-adjust { display: block; min-height: 44px; width: 100%; margin-top: 3px; font-size: 11px; color: #929a96; }
+.choice-empty { padding: 35px 20px; font-size: 13px; text-align: center; color: var(--muted); }
+@keyframes choice-card-enter { from { opacity: 0; transform: translateY(15px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width:360px) {
+  dialog.choice-sheet { padding-left: 15px; padding-right: 15px; }
+  .choice-sheet .sheet-heading h2 { font-size: 21px; }
+  .choice-content { grid-template-columns: 60px minmax(0,1fr); gap: 10px; padding: 11px; }
+  .choice-title { font-size: 14px; }
+  .choice-visual .plate-art { width: 85px; }
+  .choice-foods > span { font-size: 10px; gap: 5px; }
+  .choice-role { flex-basis: 28px; }
+  .picker-invitation h2 { font-size: 18px; }
+}
+@media (max-height:700px) {
+  .choice-sheet .sheet-handle { margin-bottom: 7px; }
+  .choice-intro { padding-bottom: 10px; }
+  .choice-content { min-height: 118px; padding-top: 9px; padding-bottom: 9px; }
+  .choice-visual { min-height: 98px; }
+  .choice-footer { padding-top: 9px; }
+  .choice-footer > p { margin-bottom: 7px; }
+}
+@media (min-width:700px) {
+  dialog.choice-sheet { border-radius: 28px; bottom: 24px; max-height: calc(100dvh - 48px); }
+}

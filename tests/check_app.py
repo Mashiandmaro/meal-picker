@@ -25,7 +25,7 @@ def run():
         errors = []
         page.on('pageerror', lambda e: errors.append(str(e)))
         page.goto(url, wait_until='networkidle')
-        page.wait_for_selector('.meal-card')
+        page.wait_for_selector('.picker-invitation')
         def state():
             return page.evaluate("JSON.parse(localStorage.getItem('good-meal:v1'))")
         def action(name):
@@ -33,6 +33,15 @@ def run():
         def check(name, condition=True):
             assert condition, name
             results.append(name)
+        def pick_meal():
+            if not page.locator('#sheet').is_visible():
+                action('shuffle').click()
+            page.locator('.choice-card').first.click()
+            action('confirm-choice').click()
+            page.locator('#sheet').wait_for(state='hidden')
+            page.wait_for_selector('.meal-card')
+
+        pick_meal()
 
         # Data is coherent and every meal/type has at least one complete combination.
         data = page.evaluate("""async()=>{const d=await import('./data.js'); const e=await import('./engine.js');return {count:d.RECIPES.length,valid:d.RECIPES.every(e.validateRecipe),ids:new Set(d.RECIPES.map(r=>r.id)).size,coverage:Object.keys(d.MEALS).every(m=>Object.keys(d.TYPES).every(t=>d.RECIPES.some(r=>r.meals.includes(m)&&r.type===t))),scenes:d.RECIPES.every(r=>r.scenes.every(s=>r.parts.every(p=>p.scenes.includes(s))))}}""")
@@ -50,9 +59,10 @@ def run():
         page.locator('[data-tab="today"]').click()
         # Stable candidate count for deterministic checks.
         page.locator('[data-action="meal"][data-value="lunch"]').click()
+        pick_meal()
         page.locator('[data-action="type"][data-value="lean"]').click()
         first=state()['current']['id']
-        action('shuffle').click()
+        pick_meal()
         check('Random selection avoids immediate repeats',state()['current']['id']!=first)
         current=state()['current']['id']
         action('favorite').click()
@@ -67,14 +77,15 @@ def run():
         page.locator('input[name="excluded"][value="鸡肉"]').check()
         page.locator('#preferences-form button[type="submit"]').click()
         for _ in range(5):
-            action('shuffle').click()
+            pick_meal()
             check('Chicken excluded from all recommended components',all('鸡肉' not in part['tags'] for part in state()['current']['parts']))
         action('scene').click()
         page.locator('[data-action="set-scene"][data-value="quick"]').click()
+        pick_meal()
         check('Scene filters recommendation','quick' in state()['current']['scenes'])
 
         action('swap').click()
-        page.locator('[data-action="swap-role"][data-value="starch"]').click()
+        page.locator('#sheet [data-action="swap-role"][data-value="starch"]').click()
         old=next(x['id'] for x in state()['current']['parts'] if x['role']=='starch')
         action('replace-part').first.click()
         check('Replacing a component changes only that role',next(x['id'] for x in state()['current']['parts'] if x['role']=='starch')!=old)
@@ -116,10 +127,12 @@ def run():
         action('detail').first.click()
         check('Detail sheet opens and fits viewport',page.locator('#sheet').is_visible() and page.locator('#sheet').bounding_box()['width']<=390)
         page.keyboard.press('Escape')
+        page.locator('#sheet').wait_for(state='hidden')
         check('Dialog can be dismissed',not page.locator('#sheet').is_visible())
 
         page.emulate_media(reduced_motion='reduce')
         page.locator('[data-tab="today"]').click()
+        pick_meal()
         check('Reduced motion preference respected',page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches"))
         page.wait_for_function('navigator.serviceWorker.controller !== null')
         await_cache=page.evaluate("async()=>{const c=await caches.open('good-meal-v1');return (await c.keys()).length}")
@@ -146,6 +159,9 @@ def run():
         clean.evaluate("localStorage.removeItem('good-meal:v1')")
         clean.reload(wait_until='networkidle')
         clean.locator('[data-action="meal"][data-value="lunch"]').click()
+        clean.locator('.choice-card').first.click()
+        clean.locator('[data-action="confirm-choice"]').click()
+        clean.locator('#sheet').wait_for(state='hidden')
         clean.screenshot(path=str(shots/'iphone-home.png'),full_page=True)
         clean.screenshot(path=str(shots/'iphone-viewport.png'))
         context.close();browser.close()
